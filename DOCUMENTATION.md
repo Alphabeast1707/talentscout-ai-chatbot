@@ -1392,3 +1392,158 @@ SOFTWARE.
 ---
 
 *This documentation was last updated on May 29, 2025. For the most current information, please check the GitHub repository.*
+
+---
+
+## 🤖 Conversational Interface
+
+### Overview
+TalentScout AI features a natural conversational interface that guides users through the interview preparation process using intelligent conversation flow management.
+
+### Conversation States
+The chatbot operates through distinct conversation states:
+
+1. **GREETING** - Initial welcome and information collection
+2. **COLLECTING_INFO** - Gathering missing candidate details
+3. **TECH_STACK_INPUT** - Technology stack specification
+4. **GENERATING_QUESTIONS** - AI question generation process
+5. **FOLLOW_UP** - Question type selection and customization
+6. **ENDING** - Conversation conclusion and next steps
+
+### Conversational Features
+
+#### Natural Language Processing
+- **Intent Recognition**: Detects greetings, endings, and help requests
+- **Information Extraction**: Automatically parses names, emails, experience, and roles
+- **Technology Detection**: Identifies tech stack from natural language descriptions
+- **Context Awareness**: Maintains conversation context across interactions
+
+#### Intelligent Flow Management
+- **State Transitions**: Seamless progression through conversation stages
+- **Error Recovery**: Handles incomplete information gracefully
+- **Fallback Responses**: Provides helpful guidance when input is unclear
+- **Conversation Memory**: Retains information throughout the session
+
+#### User Experience Enhancements
+- **Real-time Profile Updates**: Live candidate profile display in sidebar
+- **Progress Tracking**: Visual progress indicators for profile completion
+- **Conversation History**: Complete message history with proper formatting
+- **Quick Actions**: Reset options and conversation controls
+
+### API Reference - Conversation Classes
+
+#### ConversationState (Enum)
+```python
+class ConversationState(Enum):
+    GREETING = "greeting"
+    COLLECTING_INFO = "collecting_info"
+    TECH_STACK_INPUT = "tech_stack_input"
+    GENERATING_QUESTIONS = "generating_questions"
+    FOLLOW_UP = "follow_up"
+    ENDING = "ending"
+```
+
+#### CandidateProfile (Dataclass)
+```python
+@dataclass
+class CandidateProfile:
+    name: str = ""
+    email: str = ""
+    position: str = ""
+    experience: int = 0
+    tech_stack: List[str] = None
+    question_type: str = ""
+```
+
+#### ConversationManager Class
+
+##### Key Methods:
+
+**initialize_session()**
+- Initializes session state for conversation management
+- Sets up conversation history and candidate profile
+
+**detect_conversation_ending(user_input: str) -> bool**
+- Detects user intent to end conversation
+- Recognizes keywords: "bye", "goodbye", "exit", "quit", "done"
+
+**extract_tech_stack(user_input: str) -> List[str]**
+- Extracts technology stack from natural language input
+- Uses regex patterns and keyword matching
+- Returns up to 10 identified technologies
+
+**parse_user_info(user_input: str, profile: CandidateProfile) -> Tuple[CandidateProfile, List[str]]**
+- Parses candidate information from natural language
+- Extracts name, email, position, and experience
+- Returns updated profile and list of missing information
+
+**generate_fallback_response(user_input: str, state: ConversationState) -> str**
+- Provides contextual help when user input is unclear
+- Offers guidance specific to current conversation state
+
+### Usage Examples
+
+#### Starting a Conversation
+```
+User: "Hi, I'm Sarah Johnson applying for a Senior Python Developer role with 5 years of experience"
+
+Bot: "Great! I got some information. Still needed: Email address
+Please provide your email address for our records."
+```
+
+#### Tech Stack Input
+```
+User: "I work with Python, Django, React, PostgreSQL, Docker, and AWS"
+
+Bot: "Excellent! I found these technologies: Python, Django, React, PostgreSQL, Docker, AWS
+What type of questions would you like?"
+```
+
+#### Question Generation
+```
+User: "I'd like both technical and behavioral questions"
+
+Bot: "Perfect! I've generated 12 personalized interview questions for you!
+Your questions are now displayed in the sidebar."
+```
+
+### Conversation Controls
+
+#### Sidebar Features
+- **New Conversation**: Resets entire session
+- **Reset Current Step**: Resets current conversation state
+- **Current State Display**: Shows active conversation stage
+- **Model Selection**: Choose AI model for question generation
+
+#### User Commands
+- **Help**: Type "help" for guidance at any stage
+- **End Conversation**: Use "bye", "done", or "quit" to conclude
+- **Reset**: Start over with new information anytime
+
+### Error Handling
+
+#### Graceful Degradation
+- **API Failures**: Clear error messages with troubleshooting steps
+- **Invalid Input**: Helpful prompts for correct information format
+- **Missing Information**: Progressive collection with clear requirements
+- **Network Issues**: Retry mechanisms and fallback responses
+
+#### Validation Features
+- **Email Format**: Validates email address patterns
+- **Experience Range**: Ensures reasonable experience years (0-50)
+- **Tech Stack**: Validates and cleans technology inputs
+- **Name Format**: Filters common words that aren't names
+
+### Advanced Features
+
+#### Context Preservation
+- **Session State**: Maintains conversation context across page refreshes
+- **Profile Persistence**: Retains candidate information throughout session
+- **History Management**: Stores complete conversation history
+- **Progress Tracking**: Visual indicators for completion status
+
+#### Intelligent Responses
+- **Dynamic Prompts**: Context-aware response generation
+- **Personalization**: Tailored messages based on user information
+- **Multi-modal Input**: Handles various input formats and styles
+- **Adaptive Guidance**: Adjusts help based on user confusion indicators
